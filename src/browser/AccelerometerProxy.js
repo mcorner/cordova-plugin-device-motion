@@ -20,24 +20,25 @@
 */
 
 
-function listener(success) {
+function listener(event, success) {
     var accel = {};
 
-    accel.x = (Math.round(((Math.random() * 2) - 1) * 100) / 100);
-    accel.y = (Math.round(((Math.random() * 2) - 1) * 100) / 100);
-    accel.z = (Math.round(((Math.random() * 2) - 1) * 100) / 100);
+    accel.x = event.acceleration.x;
+    accel.y = event.acceleration.y;
+    accel.z = event.acceleration.z;
     accel.timestamp = new Date().getTime();
 
-    success(accel);
-
-    window.removeEventListener('devicemotion', listener, false);
+    success(accel, { keepCallback : true });
 }
 
 var Accelerometer = {
     start: function start(success, error) {
-        return window.addEventListener('devicemotion', function(){
-            listener(success);
+        return window.addEventListener('devicemotion', function(event){
+            listener(event, success);
         }, false);
+    },
+    stop: function stop() {
+      window.removeEventListener('devicemotion', listener, false);
     }
 };
 
